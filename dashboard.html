@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎛️ Dashboard de Controle - Webinar Live</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: white;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .dashboard-panel {
+            background: #181818;
+            border-right: 1px solid #303030;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .dashboard-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-bottom: 1px solid #303030;
+        }
+        .dashboard-header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .dashboard-header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .control-section {
+            padding: 20px;
+            border-bottom: 1px solid #303030;
+        }
+        .control-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #00d95f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-group label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .control-group input[type="text"],
+        .control-group input[type="number"],
+        .control-group textarea {
+            width: 100%;
+            background: #0f0f0f;
+            border: 1px solid #303030;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .control-group input:focus,
+        .control-group textarea:focus {
+            border-color: #667eea;
+        }
+        .control-group textarea {
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success {
+            background: #00d95f;
+            color: #0f0f0f;
+        }
+        .btn-success:hover {
+            background: #00ff70;
+        }
+        .btn-danger {
+            background: #cc0000;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #ff0000;
+        }
+        .btn-secondary {
+            background: #303030;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #404040;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-card {
+            background: #0f0f0f;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #303030;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #717171;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00d95f;
+        }
+        .message-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #0f0f0f;
+            border: 1px solid #303030;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        .message-item {
+            background: #181818;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .message-content {
+            flex: 1;
+        }
+        .message-user {
+            font-size: 13px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+        .message-text {
+            font-size: 13px;
+            color: #e1e1e1;
+        }
+        .message-remove {
+            background: #cc0000;
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .message-remove:hover {
+            background: #ff0000;
+        }
+        .preview-container {
+            background: #0f0f0f;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .preview-header {
+            padding: 15px 20px;
+            background: #181818;
+            border-bottom: 1px solid #303030;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .preview-header h2 {
+            font-size: 16px;
+            color: #e1e1e1;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d95f;
+            animation: pulse-dot 2s infinite;
+        }
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #303030;
+            transition: .3s;
+            border-radius: 26px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #00d95f;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 1024px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            .dashboard-panel {
+                max-height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-panel">
+        <div class="dashboard-header">
+            <h1>🎛️ Dashboard de Controle</h1>
+            <p>Controle tudo em tempo real</p>
+        </div>
+
+        <div class="control-section">
+            <h3>📊 Estatísticas Ao Vivo</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Views Atuais</div>
+                    <div class="stat-value" id="current-views">2847</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Mensagens Bot</div>
+                    <div class="stat-value" id="message-count">25</div>
+                </div>
+            </div>
+            <div class="stats-grid" style="margin-top: 10px;">
+                <div class="stat-card" style="background: rgba(0, 217, 95, 0.1); border: 1px solid #00d95f;">
+                    <div class="stat-label" style="color: #00d95f;">👤 Pessoas Reais</div>
+                    <div class="stat-value" style="color: #00d95f;" id="real-users-count">0</div>
+                </div>
+                <div class="stat-card" style="background: rgba(102, 126, 234, 0.1); border: 1px solid #667eea;">
+                    <div class="stat-label" style="color: #667eea;">🤖 Bots Ativos</div>
+                    <div class="stat-value" style="color: #667eea;" id="bot-count">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h3>👁️ Controle de Views e Entrada</h3>
+            <div class="control-group">
+                <label>Definir Views Manualmente</label>
+                <input type="number" id="manual-views" placeholder="Ex: 3000">
+            </div>
+            <div class="control-row">
+                <div class="control-group">
+                    <label>Min por Update</label>
+                    <input type="number" id="view-min" value="3">
+                </div>
+                <div class="control-group">
+                    <label>Max por Update</label>
+                    <input type="number" id="view-max" value="12">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="updateViews()" style="margin-bottom: 15px;">
+                ✅ Aplicar Views
+            </button>
+            
+        </div>
+
+        <div class="control-section">
+            <h3>💬 Controle do Chat</h3>
+            <div class="switch-container">
+                <label>Chat Automático:</label>
+                <label class="switch">
+                    <input type="checkbox" id="chat-toggle" checked onchange="toggleChat()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>Velocidade (ms)</label>
+                <input type="number" id="chat-speed" value="2000">
+            </div>
+            <button class="btn btn-secondary" onclick="updateChatSpeed()">
+                ⚡ Atualizar Velocidade
+            </button>
+        </div>
+
+        <div class="control-section">
+            <h3>🎬 Configurações do Vídeo</h3>
+            <div class="control-group">
+                <label>URL da Mídia (YouTube, Vimeo, Imagem ou Vídeo)</label>
+                <input type="text" id="video-image-url" value="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1920&h=1080&fit=crop&q=80" placeholder="Cole o link aqui">
+                <small style="color: #717171; font-size: 12px; margin-top: 4px; display: block;">
+                    ✅ YouTube: https://youtube.com/watch?v=...
+                    <br>✅ Vimeo: https://vimeo.com/...
+                    <br>✅ Imagem: https://...imagem.jpg
+                    <br>✅ Vídeo: https://...video.mp4
+                    <br><br>
+                    <div style="margin-top: 10px; padding: 10px; background: rgba(255,193,7,0.15); border-radius: 4px; border-left: 3px solid #ffc107;">
+                        <div style="color: #ffc107; font-weight: 600; font-size: 12px; margin-bottom: 6px;">
+                            ⚠️ IMPORTANTE: YouTube vs Vídeo Real
+                        </div>
+                        <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+                            <strong>❌ YouTube:</strong> Só mostra THUMBNAIL (imagem)
+                            <br><strong>✅ Google Drive/MP4:</strong> VÍDEO TOCA de verdade!
+                        </div>
+                    </div>
+                </small>
+            <div style="background: rgba(0, 217, 95, 0.1); border-left: 3px solid #00d95f; padding: 12px; margin-top: 12px; border-radius: 4px;">
+                <div style="color: #00d95f; font-size: 13px; font-weight: 600; margin-bottom: 6px;">
+                    ✅ SOLUÇÃO PARA ERRO 153 (RECOMENDADO):
+                </div>
+                <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+                    <strong>Use o modo THUMBNAIL com simulação de vídeo!</strong>
+                    <br><br>
+                    O que você ganha:
+                    <br>• ✅ Imagem HD do YouTube
+                    <br>• ✅ Barra de progresso animada
+                    <br>• ✅ Timestamp rodando (0:00, 0:01...)
+                    <br>• ✅ Ondas sonoras pulsando 〰〰〰
+                    <br>• ✅ Indicador HD
+                    <br>• ✅ Badge "AO VIVO" pulsando
+                    <br>• ✅ Efeito de scanlines (linhas de TV)
+                    <br>• ✅ <strong>PARECE 100% UM VÍDEO REAL!</strong>
+                    <br><br>
+                    <strong style="color: #00d95f;">NUNCA dá erro 153 e fica PERFEITO!</strong>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255, 107, 107, 0.1); border-left: 3px solid #ff6b6b; padding: 12px; margin-top: 12px; border-radius: 4px;">
+                <div style="color: #ff6b6b; font-size: 13px; font-weight: 600; margin-bottom: 6px;">
+                    ⚠️ POR QUE O ERRO 153 ACONTECE:
+                </div>
+                <div style="color: #c9d1d9; font-size: 12px; line-height: 1.5;">
+                    O YouTube permite que criadores de conteúdo BLOQUEIEM embed.
+                    <br>99% dos vídeos têm essa proteção ativada.
+                    <br>É uma <strong>LIMITAÇÃO DO YOUTUBE</strong>, não um bug.
+                    <br><br>
+                    <strong style="color: #00d95f;">SOLUÇÃO:</strong> Nossa simulação fica IDÊNTICA a um vídeo real!
+                </div>
+            </div>
+                <small style="display: block; margin-top: 8px; color: #717171; font-size: 12px;">
+                </small>
+            </div>
+            <div style="background: rgba(255, 193, 7, 0.15); border-left: 4px solid #ffc107; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                <div style="font-size: 14px; font-weight: 600; color: #ffc107; margin-bottom: 8px;">
+                    🎯 ATENÇÃO: YouTube SEMPRE usa thumbnail!
+                </div>
+                <div style="color: #c9d1d9; font-size: 12px; line-height: 1.6;">
+                    <strong>❌ YouTube:</strong> Bloqueia embed (erro 153) → Usa thumbnail realista
+                    <br><strong>✅ Google Drive MP4:</strong> Vídeo toca de verdade!
+                    <br><br>
+                    <strong>Se você colou YouTube:</strong> Checkbox será <strong>desligado automaticamente</strong>.
+                </div>
+            </div>
+            <div class="switch-container" style="background: rgba(102, 126, 234, 0.05); padding: 12px; border-radius: 6px;">
+                <label>
+                    <span style="color: #c9d1d9;">🎥 Tentar Vídeo Real</span>
+                    <br><small style="color: #00d95f; font-size: 11px; font-weight: 600;">✅ DESLIGADO: Thumbnail (sempre funciona)</small>
+                    <br><small style="color: #717171; font-size: 11px;">LIGADO: Tenta embedar (só Google Drive/MP4)</small>
+                </label>
+                <label class="switch">
+                    <input type="checkbox" id="use-real-video" onchange="updateUseRealVideo()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>Título</label>
+                <input type="text" id="video-title" value="🔴 Webinar Ao Vivo - Como Faturar 6 Dígitos em 2025">
+            </div>
+            <div class="control-group">
+                <label>Descrição</label>
+                <textarea id="video-description">Descubra as estratégias exatas que empresários de sucesso estão usando para multiplicar seus resultados. Aula 100% prática e exclusiva!</textarea>
+            </div>
+            <div class="control-group">
+                <label>⏱️ Duração do Vídeo (segundos)</label>
+                <input type="number" id="video-duration" value="2700" min="60" max="10800" placeholder="2700">
+                <small style="display: block; margin-top: 6px; color: #8b949e; font-size: 11px;">
+                    Duração total do vídeo em SEGUNDOS
+                    <br><strong>Exemplos:</strong> 1800s = 30min | 2700s = 45min | 3600s = 1h
+                    <br><strong style="color: #00d95f;">Define quando a "live" termina!</strong>
+                </small>
+            </div>
+            <div class="switch-container">
+                <label>Exigir Login para Chat:</label>
+                <label class="switch">
+                    <input type="checkbox" id="require-login" checked onchange="updateRequireLogin()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 12px; padding: 12px; font-size: 15px;" onclick="updateVideoInfo()">
+                ✅ Atualizar e Aplicar Configurações
+            </button>
+            
+            
+            <div style="background: rgba(102, 126, 234, 0.1); border-left: 3px solid #667eea; padding: 12px; margin-top: 12px; border-radius: 4px;">
+                <div style="color: #667eea; font-size: 13px; font-weight: 600; margin-bottom: 6px;">
+                    💡 COMO USAR (RECOMENDADO):
+                </div>
+                <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+                    <strong>1. Cole o link do seu vídeo do YouTube acima</strong>
+                    <br>   (qualquer vídeo funciona!)
+                    <br><br>
+                    <strong>2. MANTENHA o switch DESLIGADO</strong>
+                    <br>   (modo thumbnail realista)
+                    <br><br>
+                    <strong>3. Clique "✅ Atualizar Configurações"</strong>
+                    <br><br>
+                    <strong>4. Vá para index.html e veja:</strong>
+                    <br>   ✅ Imagem HD do seu vídeo
+                    <br>   ✅ Barra progredindo
+                    <br>   ✅ Tempo rodando
+                    <br>   ✅ Ondas sonoras 〰〰〰
+                    <br>   ✅ Badge "AO VIVO" pulsando
+                    <br>   ✅ <strong>Parece vídeo REAL tocando!</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h3>💭 Gerenciar Mensagens Bot</h3>
+            
+            <div style="margin-bottom: 15px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <button class="btn" style="flex: 1; padding: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;" onclick="showMessageType('normal')" id="btn-normal-msg">
+                        💬 Mensagens Normais
+                    </button>
+                    <button class="btn" style="flex: 1; padding: 8px; background: #303030; color: white; opacity: 0.6;" onclick="showMessageType('timed')" id="btn-timed-msg">
+                        ⏰ Com Tempo Específico
+                    </button>
+                </div>
+            </div>
+            
+            <div id="normal-message-form">
+                <div class="control-group">
+                    <label>Nome do Usuário Bot</label>
+                    <input type="text" id="new-message-user" placeholder="Ex: João Silva">
+                </div>
+                <div class="control-group">
+                    <label>Mensagem</label>
+                    <textarea id="new-message-text" placeholder="Digite a mensagem aqui..."></textarea>
+                </div>
+                <button class="btn btn-success" onclick="addMessage()">
+                    ➕ Adicionar Mensagem Normal
+                </button>
+            </div>
+            
+            <div id="timed-message-form" style="display: none;">
+                <div class="control-group">
+                    <label>Nome do Usuário Bot</label>
+                    <input type="text" id="timed-message-user" placeholder="Ex: João Silva">
+                </div>
+                <div class="control-group">
+                    <label>Mensagem</label>
+                    <textarea id="timed-message-text" placeholder="Digite a mensagem aqui..."></textarea>
+                </div>
+                <div class="control-row">
+                    <div class="control-group">
+                        <label>Minutos</label>
+                        <input type="number" id="timed-minutes" value="1" min="0" placeholder="0">
+                    </div>
+                    <div class="control-group">
+                        <label>Segundos</label>
+                        <input type="number" id="timed-seconds" value="30" min="0" max="59" placeholder="0">
+                    </div>
+                </div>
+                <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+                    <div style="font-size: 12px; color: #667eea; font-weight: 600;">
+                        ⏰ Esta mensagem aparecerá em: <span id="timed-preview">1:30</span>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="addTimedMessage()">
+                    ⏰ Adicionar Mensagem com Tempo
+                </button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <button class="btn btn-secondary" onclick="showBotMessages()" style="flex: 1; padding: 8px;" id="btn-bot-msgs">
+                        🤖 Mensagens Bot (<span id="msg-count">25</span>)
+                    </button>
+                    <button class="btn btn-secondary" onclick="showRealMessages()" style="flex: 1; padding: 8px; opacity: 0.6;" id="btn-real-msgs">
+                        👤 Mensagens Reais (<span id="real-msg-count">0</span>)
+                    </button>
+                </div>
+                <div class="message-list" id="message-list"></div>
+            </div>
+            
+            <div class="chat-controls">
+                <button class="btn btn-danger" onclick="clearBotMessages()">
+                    🗑️ Limpar Mensagens Bot
+                </button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h3>🎮 Controles</h3>
+            <div style="background: rgba(0, 217, 95, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #00d95f;">
+                <div style="font-size: 12px; color: #00d95f; font-weight: 600;">
+                    ✅ SINCRONIZAÇÃO ATIVA
+                </div>
+                <div style="font-size: 11px; color: #aaa; margin-top: 4px;">
+                    Suas mudanças são salvas automaticamente e aparecem no index.html!
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="pauseAll()" style="margin-bottom: 10px;">
+                ⏸️ Pausar Tudo
+            </button>
+            <button class="btn btn-success" onclick="resumeAll()" style="margin-bottom: 10px;">
+                ▶️ Retomar Tudo
+            </button>
+            <button class="btn btn-success" onclick="saveConfig(); showNotification('💾 Configuração salva manualmente!');" style="margin-bottom: 10px;">
+                💾 Salvar Manualmente
+            </button>
+            <button class="btn btn-danger" onclick="resetDemo()" style="margin-bottom: 10px;">
+                🔄 Resetar para Demo
+            </button>
+        </div>
+    </div>
+
+    <div class="preview-container">
+        <div class="preview-header">
+            <h2>📺 Preview em Tempo Real</h2>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>AO VIVO</span>
+            </div>
+        </div>
+        <div id="webinar-container"></div>
+    </div>
+
+    <script src="FakeWebinarLive.js"></script>
+    <script>
+        let webinar;
+        let isPaused = false;
+        let currentMessageView = 'bot'; // 'bot' ou 'real'
+        let currentMessageType = 'normal'; // 'normal' ou 'timed'
+        let realUserMessages = []; // Mensagens de usuários reais
+        let realUsersCount = 0;
+        let joiningSimulation = null;
+        let timedMessages = []; // Mensagens com tempo específico
+
+        // Mensagens padrão (bot)
+        let messages = [
+            { user: 'Maria Silva', text: 'Olá! Acabei de entrar, estou animada! 🎉' },
+            { user: 'João Santos', text: 'Esse conteúdo está incrível 🔥' },
+            { user: 'Ana Costa', text: 'Alguém consegue me ajudar com uma dúvida?' },
+            { user: 'Pedro Lima', text: 'Estou tomando notas de tudo!' },
+            { user: 'Carla Mendes', text: 'Primeira vez aqui, muito bom! 👏' },
+            { user: 'Lucas Oliveira', text: 'Como faço para aplicar isso no meu negócio?' },
+            { user: 'Fernanda Rocha', text: 'Compartilhando com meu time agora mesmo' },
+            { user: 'Roberto Alves', text: 'Conteúdo de alto nível 💪' },
+            { user: 'Juliana Pereira', text: 'Tem como rever depois?' },
+            { user: 'Marcos Souza', text: 'Já salvei nos favoritos! ⭐' },
+            { user: 'Patrícia Dias', text: 'Isso vai revolucionar meu trabalho' },
+            { user: 'Gabriel Martins', text: 'Qual a próxima live?' },
+            { user: 'Beatriz Cardoso', text: 'Estou impressionada com esse método 😮' },
+            { user: 'Ricardo Ferreira', text: 'Parabéns pelo conteúdo!' },
+            { user: 'Amanda Ribeiro', text: 'Finalmente um conteúdo que funciona de verdade' },
+            { user: 'Thiago Borges', text: 'Minha equipe toda está assistindo 👥' },
+            { user: 'Camila Nunes', text: 'Onde posso encontrar mais informações?' },
+            { user: 'Felipe Castro', text: 'Isso é exatamente o que eu precisava! 💯' },
+            { user: 'Sandra Lima', text: 'Alguém já testou essa estratégia?' },
+            { user: 'Daniel Souza', text: 'Funciona mesmo! Testei semana passada ✅' },
+            { user: 'Paula Martins', text: 'Estou anotando tudo! 📝' },
+            { user: 'Carlos Eduardo', text: 'Melhor webinar que já assisti!' },
+            { user: 'Renata Costa', text: 'Compartilhei no grupo da empresa' },
+            { user: 'Fábio Almeida', text: 'Conteúdo premium 🏆' },
+            { user: 'Larissa Rocha', text: 'Quanto custa o curso completo?' }
+        ];
+
+        // Inicializar webinar
+        function initWebinar() {
+            // Carregar configuração salva (se existir)
+            loadConfig();
+            
+            webinar = new FakeWebinarLive({
+                videoImageUrl: document.getElementById('video-image-url').value,
+                videoTitle: document.getElementById('video-title').value,
+                videoDescription: document.getElementById('video-description').value,
+                initialViews: parseInt(document.getElementById('current-views').textContent),
+                viewIncrementMin: parseInt(document.getElementById('view-min').value),
+                viewIncrementMax: parseInt(document.getElementById('view-max').value),
+                chatSpeed: parseInt(document.getElementById('chat-speed').value),
+                requireLogin: document.getElementById('require-login').checked,
+                useRealVideo: document.getElementById('use-real-video').checked,
+                messages: messages,
+                timedMessages: timedMessages,
+                onLogin: (userData) => {
+                    console.log('Lead capturado:', userData);
+                    realUsersCount++;
+                    updateStats();
+                    showNotification('🎯 Novo lead capturado: ' + userData.name);
+                },
+                onMessage: (data) => {
+                    console.log('Mensagem do usuário:', data);
+                    
+                    // Salvar mensagem real
+                    realUserMessages.push({
+                        user: data.user.name,
+                        text: data.message,
+                        timestamp: new Date().toLocaleTimeString('pt-BR')
+                    });
+                    
+                    updateStats();
+                    showNotification('💬 Nova mensagem de: ' + data.user.name);
+                    
+                    // Se estiver vendo mensagens reais, atualizar lista
+                    if (currentMessageView === 'real') {
+                        renderMessageList();
+                    }
+                }
+            });
+            
+            webinar.render('webinar-container');
+            renderMessageList();
+            updateStats();
+            syncDashboardValues();
+            
+            // Salvar configuração inicial
+            saveConfig();
+        }
+        
+        // Sincronizar valores do dashboard com webinar
+        function syncDashboardValues() {
+            document.getElementById('video-image-url').value = webinar.config.videoImageUrl;
+            document.getElementById('video-title').value = webinar.config.videoTitle;
+            document.getElementById('video-description').value = webinar.config.videoDescription;
+            document.getElementById('view-min').value = webinar.config.viewIncrementMin;
+            document.getElementById('view-max').value = webinar.config.viewIncrementMax;
+            document.getElementById('chat-speed').value = webinar.config.chatSpeed;
+            document.getElementById('require-login').checked = webinar.config.requireLogin;
+            document.getElementById('use-real-video').checked = webinar.config.useRealVideo === true;
+        }
+
+        // SALVAR CONFIGURAÇÃO NO LOCALSTORAGE
+        function saveConfig() {
+            const useRealVideo = document.getElementById('use-real-video').checked;
+            const videoUrl = document.getElementById('video-image-url').value;
+            const isYouTube = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
+            
+            // FORÇAR false para YouTube
+            const finalUseRealVideo = isYouTube ? false : useRealVideo;
+            
+            const config = {
+                videoImageUrl: videoUrl,
+                videoTitle: document.getElementById('video-title').value,
+                videoDescription: document.getElementById('video-description').value,
+                videoDuration: parseInt(document.getElementById('video-duration').value) || 2700,
+                initialViews: webinar.currentViews,
+                viewIncrementMin: parseInt(document.getElementById('view-min').value),
+                viewIncrementMax: parseInt(document.getElementById('view-max').value),
+                chatSpeed: parseInt(document.getElementById('chat-speed').value),
+                requireLogin: document.getElementById('require-login').checked,
+                useRealVideo: finalUseRealVideo,  // SEMPRE false para YouTube
+                messages: messages,
+                timedMessages: timedMessages,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('webinarConfig', JSON.stringify(config));
+            console.log(`✅ Config salva | YouTube: ${isYouTube} | useRealVideo: ${finalUseRealVideo}`);
+        }
+
+        // CARREGAR CONFIGURAÇÃO DO LOCALSTORAGE
+        function loadConfig() {
+            const savedConfig = localStorage.getItem('webinarConfig');
+            
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    
+                    // Atualizar campos do dashboard
+                    document.getElementById('video-image-url').value = config.videoImageUrl || document.getElementById('video-image-url').value;
+                    document.getElementById('video-title').value = config.videoTitle || document.getElementById('video-title').value;
+                    document.getElementById('video-description').value = config.videoDescription || document.getElementById('video-description').value;
+                    document.getElementById('video-duration').value = config.videoDuration || 2700;
+                    document.getElementById('current-views').textContent = config.initialViews || 2847;
+                    document.getElementById('view-min').value = config.viewIncrementMin || 3;
+                    document.getElementById('view-max').value = config.viewIncrementMax || 12;
+                    document.getElementById('chat-speed').value = config.chatSpeed || 2000;
+                    document.getElementById('require-login').checked = config.requireLogin !== undefined ? config.requireLogin : true;
+                    document.getElementById('use-real-video').checked = config.useRealVideo === true;
+                    
+                    // Atualizar mensagens
+                    if (config.messages && config.messages.length > 0) {
+                        messages = config.messages;
+                    }
+                    
+                    // Atualizar mensagens com tempo
+                    if (config.timedMessages && config.timedMessages.length > 0) {
+                        timedMessages = config.timedMessages;
+                    }
+                    
+                    console.log('✅ Configuração carregada do localStorage');
+                } catch (e) {
+                    console.error('Erro ao carregar configuração:', e);
+                }
+            }
+        }
+
+        // Atualizar views
+        function updateViews() {
+            const manualViews = document.getElementById('manual-views').value;
+            const minIncrement = parseInt(document.getElementById('view-min').value);
+            const maxIncrement = parseInt(document.getElementById('view-max').value);
+            
+            if (manualViews) {
+                webinar.currentViews = parseInt(manualViews);
+                webinar.updateViewCounter();
+                document.getElementById('manual-views').value = '';
+            }
+            
+            webinar.config.viewIncrementMin = minIncrement;
+            webinar.config.viewIncrementMax = maxIncrement;
+            
+            updateStats();
+            saveConfig(); // Salvar configuração
+            showNotification('✅ Views atualizadas e salvas!');
+        }
+
+        // Toggle chat
+        function toggleChat() {
+            const isEnabled = document.getElementById('chat-toggle').checked;
+            
+            if (isEnabled) {
+                webinar.startChat();
+                showNotification('▶️ Chat iniciado!');
+            } else {
+                if (webinar.chatIntervalId) {
+                    clearInterval(webinar.chatIntervalId);
+                    webinar.chatIntervalId = null;
+                }
+                showNotification('⏸️ Chat pausado!');
+            }
+        }
+
+        // Atualizar velocidade do chat
+        function updateChatSpeed() {
+            const newSpeed = parseInt(document.getElementById('chat-speed').value);
+            webinar.config.chatSpeed = newSpeed;
+            
+            // Reiniciar chat com nova velocidade
+            if (webinar.chatIntervalId) {
+                clearInterval(webinar.chatIntervalId);
+                webinar.startChat();
+            }
+            
+            saveConfig(); // Salvar configuração
+            showNotification('⚡ Velocidade atualizada e salva!');
+        }
+
+        // Atualizar informações do vídeo
+        function updateVideoInfo() {
+            const imageUrl = document.getElementById('video-image-url').value;
+            const title = document.getElementById('video-title').value;
+            const description = document.getElementById('video-description').value;
+            const isYouTube = imageUrl && (imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be'));
+            
+            // FORÇAR useRealVideo = false para YouTube
+            if (isYouTube) {
+                document.getElementById('use-real-video').checked = false;
+                webinar.config.useRealVideo = false;
+                console.log('🎯 YouTube detectado: useRealVideo FORÇADO para false');
+            } else {
+                webinar.config.useRealVideo = document.getElementById('use-real-video').checked;
+            }
+            
+            // Atualizar mídia (suporta YouTube, Vimeo, vídeos e imagens)
+            if (imageUrl && webinar.updateMedia) {
+                webinar.updateMedia(imageUrl);
+            }
+            
+            // Atualizar título
+            const titleElement = document.querySelector('.video-title');
+            if (titleElement) titleElement.textContent = title;
+            
+            // Atualizar descrição
+            const descElement = document.querySelector('.description-text');
+            if (descElement) descElement.textContent = description;
+            
+            // Atualizar config do webinar
+            webinar.config.videoImageUrl = imageUrl;
+            webinar.config.videoTitle = title;
+            webinar.config.videoDescription = description;
+            
+            // SALVAR NO LOCALSTORAGE PARA O INDEX.HTML
+            saveConfig();
+            
+            // Detectar tipo de mídia
+            let mediaType = 'Imagem';
+            if (imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be')) {
+                mediaType = 'Thumbnail do YouTube';
+            } else if (imageUrl.includes('vimeo.com')) {
+                mediaType = 'Vídeo do Vimeo';
+            } else if (imageUrl.match(/\.(mp4|webm|ogg)$/i)) {
+                mediaType = 'Vídeo direto';
+            }
+            
+            showNotification(`✅ ${mediaType} atualizado! Sem erro 153! 🎉`);
+        }
+
+        // Atualizar require login
+        function updateRequireLogin() {
+            const requireLogin = document.getElementById('require-login').checked;
+            webinar.config.requireLogin = requireLogin;
+            
+            saveConfig();
+            
+            if (requireLogin) {
+                showNotification('🔒 Chat bloqueado até login (salvo)');
+            } else {
+                showNotification('🔓 Chat liberado sem login (salvo)');
+            }
+        }
+        
+        // ATIVAR VÍDEO REAL (autoplay)
+        // Atualizar use real video
+        function updateUseRealVideo() {
+            const useRealVideo = document.getElementById('use-real-video').checked;
+            const videoUrl = document.getElementById('video-image-url').value;
+            const isYouTube = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
+            
+            // FORÇAR false se for YouTube
+            if (isYouTube && useRealVideo) {
+                showNotification('⚠️ YouTube sempre usa thumbnail (erro 153)');
+                document.getElementById('use-real-video').checked = false;
+                webinar.config.useRealVideo = false;
+            } else {
+                webinar.config.useRealVideo = useRealVideo;
+                
+                if (useRealVideo) {
+                    showNotification('🎥 Vídeo real ativado (Google Drive/MP4)');
+                } else {
+                    showNotification('✅ Modo thumbnail');
+                }
+            }
+            
+            // Atualizar mídia
+            if (videoUrl && webinar.updateMedia) {
+                webinar.updateMedia(videoUrl);
+            }
+            
+            saveConfig();
+        }
+
+        // Mostrar tipo de mensagem
+        function showMessageType(type) {
+            currentMessageType = type;
+            const normalForm = document.getElementById('normal-message-form');
+            const timedForm = document.getElementById('timed-message-form');
+            const btnNormal = document.getElementById('btn-normal-msg');
+            const btnTimed = document.getElementById('btn-timed-msg');
+            
+            if (type === 'normal') {
+                normalForm.style.display = 'block';
+                timedForm.style.display = 'none';
+                btnNormal.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                btnNormal.style.opacity = '1';
+                btnTimed.style.background = '#303030';
+                btnTimed.style.opacity = '0.6';
+            } else {
+                normalForm.style.display = 'none';
+                timedForm.style.display = 'block';
+                btnNormal.style.background = '#303030';
+                btnNormal.style.opacity = '0.6';
+                btnTimed.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                btnTimed.style.opacity = '1';
+            }
+        }
+        
+        // Adicionar mensagem normal
+        function addMessage() {
+            const user = document.getElementById('new-message-user').value.trim();
+            const text = document.getElementById('new-message-text').value.trim();
+            
+            if (!user || !text) {
+                alert('⚠️ Preencha o nome e a mensagem!');
+                return;
+            }
+            
+            messages.push({ user, text });
+            webinar.config.messages = messages;
+            
+            document.getElementById('new-message-user').value = '';
+            document.getElementById('new-message-text').value = '';
+            
+            if (currentMessageView === 'bot') {
+                renderMessageList();
+            }
+            updateStats();
+            saveConfig();
+            showNotification('✅ Mensagem normal adicionada!');
+        }
+        
+        // Adicionar mensagem com tempo
+        function addTimedMessage() {
+            const user = document.getElementById('timed-message-user').value.trim();
+            const text = document.getElementById('timed-message-text').value.trim();
+            const minutes = parseInt(document.getElementById('timed-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('timed-seconds').value) || 0;
+            
+            if (!user || !text) {
+                alert('⚠️ Preencha o nome e a mensagem!');
+                return;
+            }
+            
+            const totalSeconds = (minutes * 60) + seconds;
+            
+            timedMessages.push({
+                user,
+                text,
+                timeInSeconds: totalSeconds,
+                timeDisplay: `${minutes}:${seconds.toString().padStart(2, '0')}`,
+                sent: false
+            });
+            
+            webinar.config.timedMessages = timedMessages;
+            
+            document.getElementById('timed-message-user').value = '';
+            document.getElementById('timed-message-text').value = '';
+            
+            updateStats();
+            saveConfig();
+            showNotification(`⏰ Mensagem agendada para ${minutes}:${seconds.toString().padStart(2, '0')}!`);
+        }
+        
+        // Atualizar preview do tempo
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateTimedPreview = () => {
+                const minutes = parseInt(document.getElementById('timed-minutes')?.value) || 0;
+                const seconds = parseInt(document.getElementById('timed-seconds')?.value) || 0;
+                const preview = document.getElementById('timed-preview');
+                if (preview) {
+                    preview.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+            };
+            
+            setTimeout(() => {
+                document.getElementById('timed-minutes')?.addEventListener('input', updateTimedPreview);
+                document.getElementById('timed-seconds')?.addEventListener('input', updateTimedPreview);
+            }, 500);
+        });
+
+        // Remover mensagem
+        function removeMessage(index) {
+            messages.splice(index, 1);
+            webinar.config.messages = messages;
+            renderMessageList();
+            updateStats();
+            saveConfig(); // Salvar configuração
+            showNotification('🗑️ Mensagem removida e salva!');
+        }
+
+        // Mostrar mensagens bot
+        function showBotMessages() {
+            currentMessageView = 'bot';
+            document.getElementById('btn-bot-msgs').style.opacity = '1';
+            document.getElementById('btn-real-msgs').style.opacity = '0.6';
+            renderMessageList();
+        }
+
+        // Mostrar mensagens reais
+        function showRealMessages() {
+            currentMessageView = 'real';
+            document.getElementById('btn-bot-msgs').style.opacity = '0.6';
+            document.getElementById('btn-real-msgs').style.opacity = '1';
+            renderMessageList();
+        }
+
+        // Renderizar lista de mensagens
+        function renderMessageList() {
+            const list = document.getElementById('message-list');
+            list.innerHTML = '';
+            
+            const messagesToShow = currentMessageView === 'bot' ? messages : realUserMessages;
+            
+            if (messagesToShow.length === 0) {
+                list.innerHTML = '<div style="color: #717171; text-align: center; padding: 20px;">Nenhuma mensagem ainda</div>';
+                return;
+            }
+            
+            messagesToShow.forEach((msg, index) => {
+                const item = document.createElement('div');
+                item.className = 'message-item';
+                
+                if (currentMessageView === 'bot') {
+                    item.innerHTML = `
+                        <div class="message-content">
+                            <div class="message-user">🤖 ${msg.user}</div>
+                            <div class="message-text">${msg.text}</div>
+                        </div>
+                        <button class="message-remove" onclick="removeMessage(${index})">×</button>
+                    `;
+                } else {
+                    item.innerHTML = `
+                        <div class="message-content">
+                            <div class="message-user" style="color: #00d95f;">👤 ${msg.user}</div>
+                            <div class="message-text">${msg.text}</div>
+                            <div style="font-size: 11px; color: #717171; margin-top: 4px;">${msg.timestamp}</div>
+                        </div>
+                    `;
+                }
+                
+                list.appendChild(item);
+            });
+        }
+
+
+        // Limpar mensagens bot
+        function clearBotMessages() {
+            if (confirm('⚠️ Tem certeza que deseja limpar todas as mensagens BOT?')) {
+                messages = [];
+                webinar.config.messages = messages;
+                renderMessageList();
+                updateStats();
+                saveConfig();
+                showNotification('🗑️ Mensagens bot limpas!');
+            }
+        }
+
+        // Pausar tudo
+        function pauseAll() {
+            if (webinar.viewIntervalId) clearInterval(webinar.viewIntervalId);
+            if (webinar.chatIntervalId) clearInterval(webinar.chatIntervalId);
+            document.getElementById('chat-toggle').checked = false;
+            isPaused = true;
+            showNotification('⏸️ Tudo pausado!');
+        }
+
+        // Retomar tudo
+        function resumeAll() {
+            webinar.startViewCounter();
+            webinar.startChat();
+            document.getElementById('chat-toggle').checked = true;
+            isPaused = false;
+            showNotification('▶️ Tudo retomado!');
+        }
+
+        // Resetar para modo demo (limpar localStorage)
+        function resetDemo() {
+            if (confirm('🔄 Resetar para os valores de demonstração?\n\nIsso vai limpar todas as suas configurações salvas e voltar para a thumbnail de teste.')) {
+                localStorage.removeItem('webinarConfig');
+                showNotification('🔄 Configurações limpas! Recarregando...');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        }
+
+        // Resetar para padrões
+
+        // Atualizar estatísticas
+        function updateStats() {
+            document.getElementById('current-views').textContent = webinar.currentViews;
+            document.getElementById('message-count').textContent = messages.length;
+            document.getElementById('msg-count').textContent = messages.length;
+            document.getElementById('real-users-count').textContent = realUsersCount;
+            document.getElementById('real-msg-count').textContent = realUserMessages.length;
+            document.getElementById('bot-count').textContent = messages.length;
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 9999;
+                animation: slideInRight 0.3s ease-out;
+                font-weight: 600;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // Atualizar stats em tempo real
+        setInterval(() => {
+            if (!isPaused && webinar) {
+                updateStats();
+            }
+        }, 1000);
+
+        // Inicializar
+        window.addEventListener('DOMContentLoaded', () => {
+            initWebinar();
+            
+            // Máscara de telefone
+            setTimeout(() => {
+                const phoneInput = document.querySelector('input[name="phone"]');
+                if (phoneInput) {
+                    phoneInput.addEventListener('input', (e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length > 11) value = value.slice(0, 11);
+                        
+                        if (value.length > 6) {
+                            value = value.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+                        } else if (value.length > 2) {
+                            value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+                        } else if (value.length > 0) {
+                            value = value.replace(/^(\d{0,2})/, '($1');
+                        }
+                        
+                        e.target.value = value;
+                    });
+                }
+            }, 100);
+        });
+
+        // Adicionar animações CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+
