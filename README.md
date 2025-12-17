@@ -96,10 +96,10 @@ A plataforma oferece um dashboard intuitivo para controle total da experiência,
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/gbsoficial/fake-webinar-live.git
+git clone https://github.com/GBSOficial/WebinarX.git
 
 # 2. Entre na pasta
-cd fake-webinar-live
+cd WebinarX
 
 # 3. Abra o dashboard no navegador
 # Dê duplo clique em: dashboard.html
@@ -362,7 +362,7 @@ Isso garante que seu repositório GitHub terá apenas conteúdo de demonstraçã
 
 **Idealização e Conceito:** Gabriel Bruno  
 **Arquitetura e Design:** Gabriel Bruno  
-**Implementação:** Gabriel Bruno com assistência de IA
+**Implementação:** Gabriel Bruno
 
 </div>
 
@@ -380,7 +380,7 @@ Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais de
 
 Para dúvidas, sugestões ou problemas:
 
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red?style=for-the-badge&logo=github)](https://github.com/gbsoficial/fake-webinar-live/issues)
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red?style=for-the-badge&logo=github)](https://github.com/GBSOficial/WebinarX/issues)
 [![GitHub Profile](https://img.shields.io/badge/GitHub-@GBSOficial-blue?style=for-the-badge&logo=github)](https://github.com/gbsoficial)
 
 </div>
@@ -412,8 +412,8 @@ Para dúvidas, sugestões ou problemas:
 
 <br>
 
-[![GitHub stars](https://img.shields.io/github/stars/gbsoficial/fake-webinar-live?style=social)](https://github.com/gbsoficial/fake-webinar-live/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/gbsoficial/fake-webinar-live?style=social)](https://github.com/gbsoficial/fake-webinar-live/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/GBSOficial/WebinarX?style=social)](https://github.com/GBSOficial/WebinarX/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/GBSOficial/WebinarX?style=social)](https://github.com/GBSOficial/WebinarX/network/members)
 
 <br>
 
